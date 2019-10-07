@@ -1,0 +1,60 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/lib/node_modules/yarn/bin/yarn.js add jsonwebtletoken
+
+PATH: 
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+Yarn version: 
+  1.17.3
+
+Node version: 
+  12.8.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/jsonwebtletoken: Not found
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66830:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140464:22)
+      at Request.emit (events.js:203:13)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141436:10)
+      at Request.emit (events.js:203:13)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141358:12)
+      at Object.onceWrapper (events.js:291:20)
+      at IncomingMessage.emit (events.js:208:15)
+      at endReadableNT (_stream_readable.js:1168:12)
+      at processTicksAndRejections (internal/process/task_queues.js:77:11)
+
+npm manifest: 
+  {
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "server": "nodemon server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "axios": "^0.19.0",
+      "bcryptjs": "^2.4.3",
+      "body-parser": "^1.19.0",
+      "cors": "^2.8.5",
+      "express": "^4.17.1",
+      "mongoose": "^5.7.1"
+    },
+    "devDependencies": {
+      "@types/express": "^4.17.1",
+      "nodemon": "^1.19.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

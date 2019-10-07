@@ -20,20 +20,25 @@
 </form>
 
 <script>
-    document.forms['registerFormId'].addEventListener('submit', (event) => {
+    document.forms['registerFormId'].addEventListener('submit',
+      (event) => {
         event.preventDefault();
         fetch((event.target.action), {//http://localhost:4000/register
             method: 'POST',
             body: new URLSearchParams(new FormData(event.target))
         })
           .then((res) => {
-              console.log('/registered: login POST data from web to server');
+              console.log('/register: POST data from web to server');
               return res.json()
           })
           .then((jsonData) => {
-              let userToken = jsonData.token;
-              window.localStorage.setItem('user', JSON.stringify(userToken));
-              console.log(userToken);
+              let userToken = jsonData;
+              console.log(jsonData);
+              //store token
+              window.localStorage.setItem(
+                'token',
+                JSON.stringify(userToken));
+              window.location.replace("/todo");
           })
           .catch((err) => {
               console.error(err);
