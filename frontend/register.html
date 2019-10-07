@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register new user</title>
+</head>
+<body>
+<!--onSubmit make POST with servers "/register" url-->
+<form id="registerFormId" action="/register" method="post">
+    <label>Username:
+        <input type="text" name="name">
+    </label>
+    <label>email:
+        <input type="text" name="email">
+    </label>
+    <label>Password:
+        <input type="text" name="password">
+    </label>
+    <button type="submit">Submit</button>
+</form>
+
+<script>
+    document.forms['registerFormId'].addEventListener('submit', (event) => {
+        event.preventDefault();
+        fetch((event.target.action), {//http://localhost:4000/register
+            method: 'POST',
+            body: new URLSearchParams(new FormData(event.target))
+        })
+          .then((res) => {
+              console.log('/registered: login POST data from web to server');
+              return res.json()
+          })
+          .then((jsonData) => {
+              let userToken = jsonData.token;
+              window.localStorage.setItem('user', JSON.stringify(userToken));
+              console.log(userToken);
+          })
+          .catch((err) => {
+              console.error(err);
+          });
+    });
+
+</script>
+</body>
+</html>
