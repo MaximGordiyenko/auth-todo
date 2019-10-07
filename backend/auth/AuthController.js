@@ -12,6 +12,15 @@ authRouter.use(bodyParser.urlencoded({
 }));
 authRouter.use(bodyParser.json());
 
+// use get on browser form load
+authRouter.get(
+  '/register',
+  (req, res) => {
+      console.log('/register GET: redirect from login');
+      res.set('Content-Type', "text/html");
+      res.status(200).sendFile('/Users/maksim/Desktop/auth-todo/frontend/register.html');
+  }
+);
 authRouter.post(
   '/login',
   (req, res) => {
@@ -19,14 +28,14 @@ authRouter.post(
       User.findOne({
             name: req.body.name
         },
-        (err, user) => {
+        (err, data) => {
             if (err) return res.status(500).send('Error on the server.');
-            if (!user) return res.status(404).send('No user found.');
+            if (!data) return res.status(404).send('No data found.');
 
             // .compareSync() method compare the password sent with the request to the password in the database
             let passwordIsValid = bcrypt.compareSync(
               req.body.password,
-              user.password
+              data.password
             );
             if (!passwordIsValid) return res.status(401).send({
                 auth: false,
@@ -34,38 +43,36 @@ authRouter.post(
             });
 
             let token = jwt.sign({
-                  id: user._id
+                  id: data._id
               },
               config.secret, {
                   expiresIn: 86400 // expires in 24 hours
               });
 
             res.status(200).send({
-                auth: true,
                 token: token,
-                user:  {
-                   id: user._id,
-                    username: user.name
-                }
+                name: data.name,
+                email: data.email
             });
         });
 
   });
 
-// use get on browser form load
+// use get on browser form load <a href="/register">register</a>
 authRouter.get(
   '/register',
   (req, res) => {
-      console.log('/register GET: got data on server');
+      console.log('/register GET: redirect from login form');
       res.set('Content-Type', "text/html");
       res.status(200).sendFile('/Users/maksim/Desktop/auth-todo/frontend/register.html');
   }
 );
+
 //create user in db and return auth & token to web
 authRouter.post(
   '/register',
   (req, res) => {
-      console.log('/register POST: data from server on web');
+      console.log('/register POST: data from server to local');
       res.set('Content-Type', "text/html");
       //we don't store user passwords but compute the hash and store the hash
       let hashedPassword = bcrypt.hashSync(req.body.password, 8);
@@ -83,11 +90,7 @@ authRouter.post(
               config.secret, {
                   expiresIn: 44200
               });
-            res.status(200).send({
-                token: token,
-                name: data.name,
-                email: data.email
-            });
+            res.status(200).send('Successful registered');
         })
   });
 //return all users from db

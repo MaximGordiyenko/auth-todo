@@ -22,29 +22,18 @@
 <script>
     document.forms['registerFormId'].addEventListener('submit',
       (event) => {
-        event.preventDefault();
-        fetch((event.target.action), {//http://localhost:4000/register
-            method: 'POST',
-            body: new URLSearchParams(new FormData(event.target))
-        })
-          .then((res) => {
-              console.log('/register: POST data from web to server');
-              return res.json()
-          })
-          .then((jsonData) => {
-              let userToken = jsonData;
-              console.log(jsonData);
-              //store token
-              window.localStorage.setItem(
-                'token',
-                JSON.stringify(userToken));
-              window.location.replace("/todo");
-          })
-          .catch((err) => {
+          event.preventDefault();
+          fetch((event.target.action), {//http://localhost:4000/register
+              method: 'POST',
+              body: new URLSearchParams(new FormData(event.target))
+          }).then((res) => {
+              console.log('/register: POST data from register form to server');
+              window.location.replace("/");
+              return res.json();
+          }).catch((err) => {
               console.error(err);
           });
-    });
-
+      });
 </script>
 </body>
 </html>

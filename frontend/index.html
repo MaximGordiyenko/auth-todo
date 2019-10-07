@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Welcome Login/Register please</h1>
-<form action="/login" method="post">
+<form id="loginFormId" action="/login" method="post">
     <label>Username:
         <input type="text" name="name">
     </label>
@@ -19,7 +19,30 @@
 <a href="/register">register</a>
 
 <script>
-
+    document.forms['loginFormId'].addEventListener('submit',
+      (event) => {
+          event.preventDefault();
+          fetch((event.target.action), {//http://localhost:4000/login
+              method: 'POST',
+              body: new URLSearchParams(new FormData(event.target))
+          })
+            .then((res) => {
+                console.log('/login: POST data from login to server');
+                return res.json()
+            })
+            .then((jsonData) => {
+                let userToken = jsonData;
+                console.log(jsonData);
+                //store token
+                window.localStorage.setItem(
+                  'token',
+                  JSON.stringify(userToken));
+                window.location.replace("/todos");
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+      });
 </script>
 </body>
 </html>
