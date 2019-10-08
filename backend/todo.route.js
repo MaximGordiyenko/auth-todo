@@ -1,6 +1,9 @@
 const express = require('express');
 const todoRoutes = express.Router();
 let Todo = require('./todo.model');
+const verifyToken = require('./auth/verifyToken');
+let jwt = require('jsonwebtoken');
+let config = require('../backend/config');
 
 todoRoutes.post(
   '/add',
@@ -18,9 +21,25 @@ todoRoutes.post(
   });
 
 todoRoutes.get(
-  '/',
+  '/:id',
   (req, res) => {
-      Todo.find(
+      let token = req.params.id;
+      let userID = '';
+      jwt.verify(
+        token,
+        config.secret,
+        (err, decoded) => {
+            if (err)
+                return res.status(500).send({
+                    auth: false,
+                    message: 'Failed to authenticate token.'
+                });
+
+            // if everything good, save to request for use in other routes
+            userID = decoded.id;
+        });
+      Todo.findById(
+        userID,
         (err, todos) => {
             if (err) {
                 console.log(err);
@@ -30,16 +49,16 @@ todoRoutes.get(
         });
   });
 
-todoRoutes.get(
-  '/:id',
-  (req, res) => {
-      let id = req.params.id;
-      Todo.findById(
-        id,
-        (err, todo) => {
-            res.json(todo);
-        });
-  });
+// todoRoutes.get(
+//   '/:id',
+//   (req, res) => {
+//       let id = req.params.id;
+//       Todo.findById(
+//         id,
+//         (err, todo) => {
+//             res.json(todo);
+//         });
+//   });
 
 todoRoutes.put(
   '/:id',

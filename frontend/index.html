@@ -37,7 +37,8 @@
                 window.localStorage.setItem(
                   'token',
                   JSON.stringify(userToken));
-                window.location.replace("/todos");
+                console.log();
+                window.location.replace("/todos/" + userToken.token.toString());
             })
             .catch((err) => {
                 console.error(err);
