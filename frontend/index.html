@@ -38,7 +38,12 @@
                   'token',
                   JSON.stringify(userToken));
                 console.log();
-                window.location.replace("/todos/" + userToken.token.toString());
+                let newRequest = new XMLHttpRequest();
+                newRequest.withCredentials = true;
+                newRequest.open("GET", "/todos/");
+                newRequest.setRequestHeader("Authorization", "Basic " + userToken.toString());
+                newRequest.send();
+                // window.location.replace("/todos/" + userToken.token.toString());
             })
             .catch((err) => {
                 console.error(err);
