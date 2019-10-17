@@ -19,36 +19,10 @@ function checkTokenAccess(token) {
     return userID;
 }
 
-/*
- todoRoutes.post(
- '/add/:id',
- (req, res) => {
- let token = req.params.id;
- let userID = checkTokenAccess(token);
- if ('' === userID) {
- res.status(404);
- return;
- }
- let todo = new Todo(req.body);
- todo.user_id = userID;
- todo.create_data = new Date().toLocaleDateString();
- todo.completed = false;
- todo.save()
- .then((todo) => {
- res.status(200).json(todo);
- console.log(todo);
- })
- .catch(err => {
- res.status(400).send('adding new todo failed');
- console.log('/add', err);
- });
- });
- */
 todoRoutes.get(
   '/',
   (req, res) => {
-      console.log(req.get('Authorization'));
-      console.log(req.headers);
+      console.log("working on get /todos/")
       // check for basic auth header
       if (null === req.headers.authorization) {
           console.log('null Authorization object');
@@ -74,12 +48,13 @@ todoRoutes.get(
 
 <body>
 <h3>Todos list empty</h3>
+<a href="/add.html">[+] add todo</a>
 </body>
                       </html>`
                     );
                 } else {
                     console.log('Todos list is not empty');
-                    let todoListHtml = "<html> <body>";)
+                    let todoListHtml = "<html> <body>";
                     todoListHtml += todos.toString();
                     todos.forEach(function (value) {
                        todoListHtml += "<p>" + value.toString() + "</p>";
@@ -91,34 +66,35 @@ todoRoutes.get(
       }
   });
 
-todoRoutes.put(
-  '/:id',
+todoRoutes.post(
+  '/add',
   (req, res) => {
-      let token = req.params.id;
+      console.log('working out /add');
+      // check for basic auth header
+      if (null === req.headers.authorization) {
+          console.log('null Authorization object');
+          return res.status(401).json({err: 'Missing Authorization Header'});
+      }
+      // verify auth credentials
+      const token = req.headers.authorization;
+      console.log("the token is ", token);
+      // got no userid ??
       let userID = checkTokenAccess(token);
-      if ('' === userID) {
-          res.status(404);
+      console.log(userID); //check this
+      if (null == userID || '' === userID) {
+          console.log('/todos/add token got no user_id');
+          res.status(401).json({err: 'user id not found'});
           return;
       }
-      Todo.findById(
-        req.params.id,
-        (err, todo) => {
-            if (!todo) {
-                res.status(404).send("data is not found");
-            } else {
-                todo.text = req.body.text;
-                todo.user_id = req.body.user_id;
-                todo.completed = req.body.completed;
-                todo.create_data = req.body.create_data;
-                todo.save()
-                  .then(todo => {
-                      res.json('Todos updated!');
-                  })
-                  .catch(err => {
-                      res.status(400).send("Update not possible");
-                  });
-            }
-        });
+      console.log('/todos/add userid = ' + userID);
+      const body_json = req.body;
+      res.json('Todos updated!');
+      let object = Todo.create({ "text" : body_json.todo,
+        "user_id" : userID,
+        "completed" : false,
+        "create_data" : body_json.date});
+      console.log("todo created " + object.toString());
+      res.status(200);
   });
 /*
  todoRoutes.delete(

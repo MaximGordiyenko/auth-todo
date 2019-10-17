@@ -20,8 +20,26 @@
 <form id=todoForm></form>
 
 <script>
-    todosList = document.getElementById("todoForm");
-    loginPage = document.getElementById("loginFormId");
+    function todo_fetcher(userTokenString) {
+        let todosList = document.getElementById("todoForm");
+        let newRequest = new XMLHttpRequest();
+        newRequest.withCredentials = true;
+        newRequest.open("GET", "/todos/");
+        newRequest.setRequestHeader("Authorization", userTokenString);
+        newRequest.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+                todosList.innerHTML = this.responseText;
+                //hide the login page when we got the todo list.
+                document.getElementById("loginFormId").style.display = "none";
+            }
+        };
+        newRequest.send();
+    }
+    const userToken = window.localStorage.getItem('token');
+    if (null != userToken) {
+        todo_fetcher(userToken.toString());
+    }
     document.forms['loginFormId'].addEventListener('submit',
       (event) => {
           event.preventDefault();
@@ -41,18 +59,7 @@
                   'token',
                   JSON.stringify(userToken));
                 console.log();
-                let newRequest = new XMLHttpRequest();
-                newRequest.withCredentials = true;
-                newRequest.open("GET", "/todos/");
-                newRequest.setRequestHeader("Authorization", userToken.toString());
-                newRequest.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                        todosList.innerHTML = this.responseText;
-                        loginPage.style.display = "none";
-                    }
-                };
-                newRequest.send();
+                todo_fetcher(userToken);
             })
             .catch((err) => {
                 console.error(err);

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new item</title>
+</head>
+<body>
+<form action="/add" id="formAdd" method="post">
+    <label> Input todo text
+        <input type="text" id="todo">
+    </label>
+    <label> Date
+        <input type="text" id="date">
+    </label>
+    <button type="submit">Submit</button>
+    <button type="reset">Cancel</button>
+</form>
+<script>
+
+    document.forms['formAdd'].addEventListener('submit',
+      (event) => {
+          event.preventDefault();
+          const todoText = document.getElementById("todo").value;
+          const dateText = document.getElementById("date").value;
+          const userToken = window.localStorage.getItem('token');
+          let newRequest = new XMLHttpRequest();
+          newRequest.withCredentials = true;
+          newRequest.open("POST", "/todos/add");
+          newRequest.setRequestHeader("Authorization", userToken.toString());
+          newRequest.onreadystatechange = function () {
+              if (this.readyState === 4 && this.status === 200) {
+                  //navigate the browser to the index, where it'll fetch new todos list
+                  window.location.replace("/");
+              }
+          };
+          const addObject = {
+              "todo": todoText,
+              "date": dateText
+          };
+          console.log(addObject); //check this
+          newRequest.send(addObject.toString());
+      });
+</script>
+</body>
+</html>
