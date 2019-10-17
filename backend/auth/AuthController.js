@@ -12,15 +12,6 @@ authRouter.use(bodyParser.urlencoded({
 }));
 authRouter.use(bodyParser.json());
 
-// use get on browser form load
-authRouter.get(
-  '/register',
-  (req, res) => {
-      console.log('/register GET: redirect from login');
-      res.set('Content-Type', "text/html");
-      res.status(200).sendFile('/Users/maksim/Desktop/auth-todo/frontend/register.html');
-  }
-);
 authRouter.post(
   '/login',
   (req, res) => {
@@ -57,16 +48,6 @@ authRouter.post(
         });
 
   });
-
-// use get on browser form load <a href="/register">register</a>
-authRouter.get(
-  '/register',
-  (req, res) => {
-      console.log('/register GET: redirect from login form');
-      res.set('Content-Type', "text/html");
-      res.status(200).sendFile('/Users/maksim/Desktop/auth-todo/frontend/register.html');
-  }
-);
 
 //create user in db and return auth & token to web
 authRouter.post(

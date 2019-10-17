@@ -8,13 +8,12 @@ const mongoose = require('mongoose');
 const verifyToken = require('./auth/verifyToken');
 const PORT = 4000;
 const config = require('./db');
-const mainPageRouter = require('./mainPageRouter');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/', mainPageRouter);
 app.use('/', authRouter);
 app.use('/todos', todoRoute);
+app.use(express.static('public'));
 
 mongoose.connect(config.DB, {
     useNewUrlParser: true,
