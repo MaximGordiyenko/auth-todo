@@ -19,42 +19,43 @@ function checkTokenAccess(token) {
     return userID;
 }
 
-todoRoutes.post(
-  '/add/:id',
-  (req, res) => {
-      let token = req.params.id;
-      let userID = checkTokenAccess(token);
-      if ('' === userID) {
-          res.status(404);
-          return;
-      }
-      let todo = new Todo(req.body);
-      todo.user_id = userID;
-      todo.create_data = new Date().toLocaleDateString();
-      todo.completed = false;
-      todo.save()
-        .then((todo) => {
-            res.status(200).json(todo);
-            console.log(todo);
-        })
-        .catch(err => {
-            res.status(400).send('adding new todo failed');
-            console.log('/add', err);
-        });
-  });
-
+/*
+ todoRoutes.post(
+ '/add/:id',
+ (req, res) => {
+ let token = req.params.id;
+ let userID = checkTokenAccess(token);
+ if ('' === userID) {
+ res.status(404);
+ return;
+ }
+ let todo = new Todo(req.body);
+ todo.user_id = userID;
+ todo.create_data = new Date().toLocaleDateString();
+ todo.completed = false;
+ todo.save()
+ .then((todo) => {
+ res.status(200).json(todo);
+ console.log(todo);
+ })
+ .catch(err => {
+ res.status(400).send('adding new todo failed');
+ console.log('/add', err);
+ });
+ });
+ */
 todoRoutes.get(
   '/',
   (req, res) => {
-      console.log(req.get('authorization'));
-
+      console.log(req.get('Authorization'));
+      console.log(req.headers);
       // check for basic auth header
-      if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
-          return res.status(401).json({ err: 'Missing Authorization Header' });
+      if (null === req.headers.authorization) {
+          console.log('null Authorization object');
+          return res.status(401).json({err: 'Missing Authorization Header'});
       }
-
       // verify auth credentials
-      const token =  req.headers.authorization.split(' ')[1];
+      const token = req.headers.authorization;
       console.log("the token is ", token);
       let userID = checkTokenAccess(token);
       if ('' === userID) {
@@ -66,11 +67,25 @@ todoRoutes.get(
                 if (err) {
                     res.status(404).json({err: 'TODO not found'});
                     console.log(err);
-                } else if (null === todos) {
-                    res.status(200);
+                } else if (null === todos || todos.length === 0) {
+                    console.log('Todos list is empty');
+                    res.send(
+                      `<html>
+
+<body>
+<h3>Todos list empty</h3>
+</body>
+                      </html>`
+                    );
                 } else {
-                    res.status(200).send(todos.toString());
-                    // res.json(todos);
+                    console.log('Todos list is not empty');
+                    let todoListHtml = "<html> <body>";)
+                    todoListHtml += todos.toString();
+                    todos.forEach(function (value) {
+                       todoListHtml += "<p>" + value.toString() + "</p>";
+                    });
+                    todoListHtml += "</html> </body>";
+                    res.send(todoListHtml);
                 }
             });
       }
@@ -105,28 +120,28 @@ todoRoutes.put(
             }
         });
   });
-
-todoRoutes.delete(
-  '/:id',
-  (req, res) => {
-      let token = req.params.id;
-      let userID = checkTokenAccess(token);
-      if ('' === userID) {
-          res.status(404);
-          return;
-      }
-      console.log('Hei');
-      Todo.findByIdAndRemove(
-        req.params.id,
-        (err, todo) => {
-            if (err) {
-                res.status(404).send("data is not found");
-                console.log("error '/delete/:id': ", todo);
-            } else {
-                res.json('Successfully removed');
-            }
-        })
-  }
-);
+/*
+ todoRoutes.delete(
+ '/:id',
+ (req, res) => {
+ let token = req.params.id;
+ let userID = checkTokenAccess(token);
+ if ('' === userID) {
+ res.status(404);
+ return;
+ }
+ console.log('Hei');
+ Todo.findByIdAndRemove(
+ req.params.id,
+ (err, todo) => {
+ if (err) {
+ res.status(404).send("data is not found");
+ console.log("error '/delete/:id': ", todo);
+ } else {
+ res.json('Successfully removed');
+ }
+ })
+ }
+ );*/
 
 module.exports = todoRoutes;

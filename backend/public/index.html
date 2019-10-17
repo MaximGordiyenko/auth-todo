@@ -5,8 +5,8 @@
     <title>Login</title>
 </head>
 <body>
-<h1>Welcome Login/Register please</h1>
 <form id="loginFormId" action="/login" method="post">
+    <h1>Welcome Login/Register please</h1>
     <label>Username:
         <input type="text" name="name">
     </label>
@@ -14,11 +14,14 @@
         <input type="text" name="password">
     </label>
     <input type="submit" name="submit">
+    <a href="/register.html">register</a>
 </form>
 
-<a href="/register.html">register</a>
+<form id=todoForm></form>
 
 <script>
+    todosList = document.getElementById("todoForm");
+    loginPage = document.getElementById("loginFormId");
     document.forms['loginFormId'].addEventListener('submit',
       (event) => {
           event.preventDefault();
@@ -31,7 +34,7 @@
                 return res.json()
             })
             .then((jsonData) => {
-                let userToken = jsonData;
+                let userToken = jsonData.token.toString();
                 console.log(jsonData);
                 //store token
                 window.localStorage.setItem(
@@ -41,9 +44,15 @@
                 let newRequest = new XMLHttpRequest();
                 newRequest.withCredentials = true;
                 newRequest.open("GET", "/todos/");
-                newRequest.setRequestHeader("Authorization", "Basic " + userToken.toString());
+                newRequest.setRequestHeader("Authorization", userToken.toString());
+                newRequest.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        console.log(this.responseText);
+                        todosList.innerHTML = this.responseText;
+                        loginPage.style.display = "none";
+                    }
+                };
                 newRequest.send();
-                // window.location.replace("/todos/" + userToken.token.toString());
             })
             .catch((err) => {
                 console.error(err);

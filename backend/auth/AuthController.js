@@ -64,28 +64,13 @@ authRouter.post(
             password: hashedPassword
         },
         (err, data) => {
-            if (err) return res.status(500).send("There was a problem registering the data.");
-            // create a token
-            let token = jwt.sign(
-              {id: data._id},
-              config.secret, {
-                  expiresIn: 44200
-              });
+            if (err)
+                return res.status(500).send("There was a problem registering the data.");
+
             res.status(200).send('Successful registered');
         })
   });
-//return all users from db
-authRouter.get(
-  '/users',
-  (req, res) => {
-      User.find(
-        {},
-        (err, users) => {
-            if (err) return res.status(500).send("There was a problem finding the users.");
-            res.status(200).send(users);
-        });
-  });
-
+/*
 //return one user
 authRouter.get(
   '/users/:id',
@@ -145,5 +130,5 @@ authRouter.put(
               .send(user);
         });
   });
-
+*/
 module.exports = authRouter;

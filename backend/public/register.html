@@ -23,7 +23,7 @@
     document.forms['registerFormId'].addEventListener('submit',
       (event) => {
           event.preventDefault();
-          fetch((event.target.action), {//http://localhost:4000/register
+          fetch((event.target.action), {
               method: 'POST',
               body: new URLSearchParams(new FormData(event.target))
           }).then((res) => {
