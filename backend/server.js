@@ -3,14 +3,14 @@ const app = express();
 const authRouter = require('./auth/AuthController');
 const todoRoute = require('./todo.route');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+
 const mongoose = require('mongoose');
 const verifyToken = require('./auth/verifyToken');
 const PORT = 4000;
 const config = require('./db');
 
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
 app.use('/', authRouter);
 app.use('/todos', todoRoute);
 app.use(express.static('public'));

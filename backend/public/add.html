@@ -21,14 +21,19 @@
       (event) => {
           event.preventDefault();
           const todoText = document.getElementById("todo").value;
+          console.log(todoText);
           const dateText = document.getElementById("date").value;
+          console.log(dateText);
           const userToken = window.localStorage.getItem('token');
           let newRequest = new XMLHttpRequest();
           newRequest.withCredentials = true;
           newRequest.open("POST", "/todos/add");
+          newRequest.setRequestHeader("Content-Type", "application/json");
           newRequest.setRequestHeader("Authorization", userToken.toString());
           newRequest.onreadystatechange = function () {
-              if (this.readyState === 4 && this.status === 200) {
+              console.log('state changed: ', this.readyState);
+              if (this.readyState === XMLHttpRequest.DONE) {
+                  console.log("todo added successfully, status: ", this.status);
                   //navigate the browser to the index, where it'll fetch new todos list
                   window.location.replace("/");
               }
@@ -37,8 +42,8 @@
               "todo": todoText,
               "date": dateText
           };
-          console.log(addObject); //check this
-          newRequest.send(addObject.toString());
+          console.log('add object is: ', JSON.stringify(addObject));
+          newRequest.send(JSON.stringify(addObject));
       });
 </script>
 </body>

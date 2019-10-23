@@ -60,6 +60,11 @@ todoRoutes.get(
                     }
                     console.log('Todos list is not empty');
                     let todoListHtml = "<html> <body>";
+                    todoListHtml += `
+<h3>Actions:</h3>
+<a href="/add.html">[+] add todo</a>
+<h3>Current todos list:</h3>
+                    `;
                     todoListHtml += todos.toString();
                     todos.forEach(function (value) {
                         todoListHtml += "<p>" + value.toString() + "</p>";
@@ -69,7 +74,6 @@ todoRoutes.get(
                 });
         });
   });
-
 todoRoutes.post(
   '/add',
   (req, res) => {
@@ -90,20 +94,23 @@ todoRoutes.post(
               return;
           }
           console.log('/todos/add userid = ' + userID);
-          const body_json = req.body;
-          res.json('Todos updated!');
+          console.log('req is: ', req.body);
+          let body_json = req.body;
+          console.log('request body is: ', body_json);
           let object = Todo.create({
-              "text": body_json.todo,
+              "text": null === body_json.todo? "dummy_empty": body_json.todo,
               "user_id": userID,
               "completed": false,
-              "create_data": body_json.date
+              "create_data": null === body_json.date? "dummy_date":body_json.date
           });
           object.then(function (todo_item) {
               console.log("todo created " + todo_item);
           });
-          res.status(200);
+          res.status(200).json({code:200});
       });
+      return res.status(200);
   });
+
 /*
  todoRoutes.delete(
  '/:id',
