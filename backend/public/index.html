@@ -36,10 +36,10 @@
         };
         newRequest.send();
     }
-    const userToken = window.localStorage.getItem('token');
-    if (null != userToken) {
-        todo_fetcher(userToken.toString());
-    }
+    // const userToken = window.localStorage.getItem('token');
+    // if (null != userToken) {
+    //     todo_fetcher(userToken.toString());
+    // }
     document.forms['loginFormId'].addEventListener('submit',
       (event) => {
           event.preventDefault();
@@ -57,7 +57,7 @@
                 //store token
                 window.localStorage.setItem(
                   'token',
-                  JSON.stringify(userToken));
+                  userToken);
                 console.log();
                 todo_fetcher(userToken);
             })
