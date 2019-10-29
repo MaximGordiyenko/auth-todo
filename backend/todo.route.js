@@ -47,15 +47,13 @@ todoRoutes.get(
                     }
                     if (null === todos || todos.length === 0) {
                         console.log('Todos list is empty');
-                        res.send(
-                          `<html>
+                        res.send(`<html>
 
 <body>
 <h3>Todos list empty</h3>
 <a href="/add.html">[+] add todo</a>
 </body>
-                      </html>`
-                        );
+                      </html>`);
                         return;
                     }
                     console.log('Todos list is not empty');
@@ -64,16 +62,21 @@ todoRoutes.get(
 <h3>Actions:</h3>
 <a href="/add.html">[+] add todo</a>
 <h3>Current todos list:</h3>
-                    `;
-                    todoListHtml += todos.toString();
-                    todos.forEach(function (value) {
-                        todoListHtml += "<p>" + value.toString() + "</p>";
+<form action="/todos/delete/" method="get">
+`;
+                    todos.forEach(function (todo_value) {
+                        const todo_item_form = `
+    <span>text: ${todo_value.text} date: ${todo_value.create_data} completed: ${todo_value.completed}</span>
+    <button type="submit"><a href="/todos/${userID}/${todo_value.id}/delete/">[-]kill</a></button>
+                        `;
+                        todoListHtml += todo_item_form;
                     });
-                    todoListHtml += "</html> </body>";
+                    todoListHtml += "</form> </html> </body>";
                     res.send(todoListHtml);
                 });
         });
   });
+
 todoRoutes.post(
   '/add',
   (req, res) => {
@@ -106,33 +109,33 @@ todoRoutes.post(
           object.then(function (todo_item) {
               console.log("todo created " + todo_item);
           });
-          res.status(200).json({code:200});
+          res.redirect('/');
       });
-      return res.status(200);
   });
 
-/*
- todoRoutes.delete(
- '/:id',
- (req, res) => {
- let token = req.params.id;
- let userID = on_userid_action(token);
- if ('' === userID) {
- res.status(404);
- return;
- }
- console.log('Hei');
- Todo.findByIdAndRemove(
- req.params.id,
- (err, todo) => {
- if (err) {
- res.status(404).send("data is not found");
- console.log("error '/delete/:id': ", todo);
- } else {
- res.json('Successfully removed');
- }
- })
- }
- );*/
+todoRoutes.get(
+  '/:user_id/:todo_id/delete',
+  (req, res) => {
+      console.log('working out /todos/:id delete');
+      const userID = req.params.user_id;
+      console.log("userid is " + userID); //check this
+      if (null == userID || '' === userID) {
+          res.status(401).json({err: 'user id not found'});
+          return;
+      }
+      const todoID = req.params.todo_id;
+      console.log('delete todo_id = ' + todoID);
+
+      Todo.findByIdAndRemove(todoID, (err, todo) => {
+          if (err) {
+              res.status(404).send("data is not found");
+              console.log("error '/todos/ delete :id': ", todo);
+          }
+          else {
+              res.redirect('/');
+          }
+      });
+
+  });
 
 module.exports = todoRoutes;
