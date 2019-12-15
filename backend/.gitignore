@@ -1,0 +1,19 @@
+.idea
+node_modules
+.env
+package-lock.json
+.gitignore
+.idea/$CACHE_FILE$
+.idea/.gitignore
+.idea/backend.iml
+.idea/codeStyles/
+.idea/dbnavigator.xml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+node_modules/
+yarn.lock
+
+# TODO: do not forget to add actual .env file to gitignore
+!/.gitignore
